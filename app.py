@@ -19,7 +19,7 @@ st.markdown("---")
 @st.cache_data
 def load_data():
     return pd.read_csv("data/dbd_bogor_2025.csv")
-pd.read_json
+
 @st.cache_data
 def load_geojson():
     with open(

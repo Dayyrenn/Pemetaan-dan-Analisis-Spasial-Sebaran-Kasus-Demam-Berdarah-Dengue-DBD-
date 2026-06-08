@@ -3,14 +3,13 @@ import pandas as pd
 import folium
 import json
 
-from streamlit_folium import folium_static
+from streamlit_folium import st_folium
 import plotly.express as px
 
 st.set_page_config(
     page_title="Dashboard DBD Kota Bogor 2025",
     page_icon="🦟",
-    layout="wide"
-)
+    layout="wide")
 
 st.title("🦟 Dashboard Pemetaan dan Analisis Spasial")
 st.subheader("Sebaran Kasus Demam Berdarah Dengue (DBD) Kota Bogor 2025")
@@ -22,11 +21,7 @@ def load_data():
 
 @st.cache_data
 def load_geojson():
-    with open(
-        "assets/id3271_kota_bogor.geojson",
-        "r",
-        encoding="utf-8"
-    ) as f:
+    with open("assets/id3271_kota_bogor.geojson", "r", encoding="utf-8") as f:
         return json.load(f)
 
 df_kel = load_data()
@@ -67,11 +62,15 @@ col_kiri, col_kanan = st.columns([1.4, 1])
 with col_kiri:
     st.subheader("🗺️ Peta Sebaran DBD per Kelurahan")
 
+    kasus_dict = dict(zip(df_kel["kelurahan"], df_kel["jumlah_kasus_2025"]))
+    for feature in geojson_data["features"]:
+        nama_kel = feature["properties"]["village"]
+        feature["properties"]["jumlah_kasus"] = int(kasus_dict.get(nama_kel, 0))
+
     m = folium.Map(
         location=[-6.595, 106.816],
         zoom_start=12,
-        tiles="CartoDB positron"
-    )
+        tiles="CartoDB positron")
 
     folium.Choropleth(
         geo_data=geojson_data,
@@ -84,25 +83,23 @@ with col_kiri:
         line_color="black",
         legend_name="Jumlah Kasus DBD 2025",
         nan_fill_color="lightgray",
-        highlight=True
-    ).add_to(m)
+        highlight=True).add_to(m)
 
     folium.GeoJson(
         geojson_data,
         style_function=lambda x: {
             "fillOpacity": 0,
             "weight": 1,
-            "color": "#333333"
-        },
+            "color": "#333333"},
+
         tooltip=folium.GeoJsonTooltip(
-            fields=["village", "district"],
-            aliases=["Kelurahan:", "Kecamatan:"],
-            sticky=True
-        )
+            fields=["village", "district", "jumlah_kasus"],
+            aliases=["Kelurahan:", "Kecamatan:", "Jumlah Kasus:"],
+            sticky=True)
     ).add_to(m)
 
     folium.LayerControl().add_to(m)
-    folium_static(m, width=800, height=550)
+    st_folium(m, width=800, height=550, returned_objects=[])
     kol1, kol2, kol3, kol4, kol5 = st.columns(5)
 
     with kol1:
@@ -201,7 +198,7 @@ with col_kanan:
         yaxis_title="Jumlah Kasus"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 st.markdown("---")
 
@@ -224,7 +221,7 @@ fig_top = px.bar(
 
 fig_top.update_traces(textposition="outside")
 fig_top.update_layout(height=450)
-st.plotly_chart(fig_top, use_container_width=True)
+st.plotly_chart(fig_top, width='stretch')
 
 st.markdown("---")
 
@@ -257,7 +254,7 @@ df_filtered = df_filtered[
 df_show = df_filtered.sort_values("jumlah_kasus_2025", ascending=False).reset_index(drop=True)
 df_show.index += 1
 
-st.dataframe(df_show, use_container_width=True)
+st.dataframe(df_show, width='stretch')
 
 st.markdown("---")
 st.caption("📌 Sumber Data: Dinas Kesehatan Kota Bogor Tahun 2025")

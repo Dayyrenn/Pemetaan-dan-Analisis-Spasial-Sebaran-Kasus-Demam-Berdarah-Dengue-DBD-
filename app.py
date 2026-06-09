@@ -139,6 +139,23 @@ with col_kiri:
         returned_objects=["last_object_clicked_popup"]
     )
 
+    jumlah_max = int(df_year["jumlah_kasus"].max())
+    q1 = int(df_year["jumlah_kasus"].quantile(0.25))
+    q2 = int(df_year["jumlah_kasus"].quantile(0.50))
+    q3 = int(df_year["jumlah_kasus"].quantile(0.75))
+
+    st.markdown(
+        f"""
+        <div style="font-size:13px; margin-top:8px; line-height:1.8;">
+            <b>Informasi:</b><br>
+            🟡 <b>Kuning</b> — Kasus rendah (1 – {q1} kasus)<br>
+            🟠 <b>Oranye</b> — Kasus sedang ({q1+1} – {q3} kasus)<br>
+            🔴 <b>Merah</b> — Kasus tinggi ({q3+1} – {jumlah_max} kasus)<br>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 with col_kanan:
     st.subheader("📊 Total Kasus per Kecamatan")
 

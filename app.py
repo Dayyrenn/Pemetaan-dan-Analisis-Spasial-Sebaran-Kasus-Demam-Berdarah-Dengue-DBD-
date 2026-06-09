@@ -272,14 +272,20 @@ st.markdown("---")
 
 st.markdown(
     """
-    <div style="text-align:center; padding:10px;">
-        <p>📌 Sumber Data: Open Data Jawa Barat</p>
-        <p>👨‍💻 Kontributor: <b>Achmad Muhajir</b></p>
-        <p>
-            <a href="https://github.com/Dayyrenn" target="_blank">
-                🔗 GitHub
-            </a>
-        </p>
+    <div style="text-align:center; padding:10px; line-height:2;">
+        📌 <b>Source Data:</b>
+        <a href="https://opendata.bogorkab.go.id/dataset/penderita-penyakit-menular-demam-berdarah-menurut-kecamatan-di-kabupaten-bogor" target="_blank">
+            Open Data Kabupaten Bogor
+        </a>
+        &nbsp;|&nbsp;
+        🗺️ <b>GeoJSON Peta:</b>
+        <a href="https://github.com/JfrAziz/indonesia-district/blob/master/id32_jawa_barat/id3201_bogor/id3201_bogor.geojson" target="_blank">
+            JfrAziz / indonesia-district
+        </a>
+        <br>
+        👨‍💻 <b>Kontributor:</b> Achmad Muhajir
+        &nbsp;|&nbsp;
+        <a href="https://github.com/Dayyrenn" target="_blank">🔗 My GitHub</a>
     </div>
     """,
     unsafe_allow_html=True

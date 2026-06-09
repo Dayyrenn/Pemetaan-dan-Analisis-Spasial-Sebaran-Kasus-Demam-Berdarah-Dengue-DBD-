@@ -159,7 +159,6 @@ with col_kiri:
 with col_kanan:
     st.subheader("📊 Total Kasus per Kecamatan")
 
-    # Panel detail kecamatan diklik
     clicked = map_data.get("last_object_clicked_popup")
     if clicked:
         match = re.search(

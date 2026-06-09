@@ -38,11 +38,6 @@ for feature in geojson_data["features"]:
         feature["properties"]["district"]
     ).strip()
 
-
-# ==========================
-# FILTER TAHUN
-# ==========================
-
 tahun_list = sorted(df["tahun"].unique())
 
 selected_year = st.selectbox(
@@ -52,11 +47,6 @@ selected_year = st.selectbox(
 )
 
 df_year = df[df["tahun"] == selected_year].copy()
-
-
-# ==========================
-# METRIC
-# ==========================
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -92,10 +82,6 @@ with col4:
 st.markdown("---")
 
 col_kiri, col_kanan = st.columns([1.5, 1])
-
-# ==========================
-# PETA
-# ==========================
 
 with col_kiri:
 
@@ -163,26 +149,27 @@ with col_kiri:
         returned_objects=[]
     )
 
-# ==========================
-# GRAFIK KECAMATAN
-# ==========================
 
 with col_kanan:
 
     st.subheader("📊 Total Kasus per Kecamatan")
 
-    df_kecamatan = df_year.sort_values(
-        "jumlah_kasus",
-        ascending=False
+    df_kecamatan = (
+        df_year
+        .sort_values(
+            "jumlah_kasus",
+            ascending=True
+        )
     )
 
     fig = px.bar(
         df_kecamatan,
-        x="kecamatan",
-        y="jumlah_kasus",
+        x="jumlah_kasus",
+        y="kecamatan",
         color="jumlah_kasus",
         color_continuous_scale="YlOrRd",
-        text="jumlah_kasus"
+        text="jumlah_kasus",
+        orientation="h"
     )
 
     fig.update_traces(
@@ -190,31 +177,39 @@ with col_kanan:
     )
 
     fig.update_layout(
-        height=500,
+        height=850,
         showlegend=False,
         coloraxis_showscale=False,
-        xaxis_title="Kecamatan",
-        yaxis_title="Jumlah Kasus"
+        xaxis_title="Jumlah Kasus",
+        yaxis_title="Kecamatan",
+        margin=dict(
+            l=10,
+            r=10,
+            t=30,
+            b=10
+        )
     )
 
     st.plotly_chart(
         fig,
-        use_container_width=True
+        width="stretch"
     )
 
 st.markdown("---")
 
-# ==========================
-# TOP KECAMATAN
-# ==========================
+st.subheader("🏆 10 Kecamatan dengan Kasus DBD Tertinggi")
 
-st.subheader("📈 Kecamatan dengan Kasus DBD Tertinggi")
-
-fig_top = px.bar(
-    df_year.sort_values(
+top10 = (
+    df_year
+    .sort_values(
         "jumlah_kasus",
         ascending=False
-    ),
+    )
+    .head(10)
+)
+
+fig_top = px.bar(
+    top10,
     x="kecamatan",
     y="jumlah_kasus",
     text="jumlah_kasus",
@@ -228,20 +223,17 @@ fig_top.update_traces(
 
 fig_top.update_layout(
     height=500,
-    coloraxis_showscale=False
+    coloraxis_showscale=False,
+    xaxis_title="Kecamatan",
+    yaxis_title="Jumlah Kasus"
 )
 
 st.plotly_chart(
     fig_top,
-    use_container_width=True
+    width="stretch"
 )
 
 st.markdown("---")
-
-# ==========================
-# TABEL DATA
-# ==========================
-
 st.subheader("📋 Data Kecamatan")
 
 filter_min, filter_max = st.slider(
@@ -273,11 +265,22 @@ df_show.index += 1
 
 st.dataframe(
     df_show,
-    use_container_width=True
+    width="stretch"
 )
 
 st.markdown("---")
 
-st.caption(
-    "📌 Sumber Data: Dinas Kesehatan Kabupaten Bogor"
+st.markdown(
+    """
+    <div style="text-align:center; padding:10px;">
+        <p>📌 Sumber Data: Open Data Jawa Barat</p>
+        <p>👨‍💻 Kontributor: <b>Achmad Muhajir</b></p>
+        <p>
+            <a href="https://github.com/Dayyrenn" target="_blank">
+                🔗 GitHub
+            </a>
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
